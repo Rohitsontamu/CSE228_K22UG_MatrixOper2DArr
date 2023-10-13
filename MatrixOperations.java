@@ -32,7 +32,8 @@ public class MatrixOperations {
             System.out.println("2. MatrixA + MatrixB (Addition)");
             System.out.println("3. MatrixA - MatrixB (Subtraction)");
             System.out.println("4. Invert MatrixA");
-            System.out.println("5. Exit");
+            System.out.println("5. Transpose MatrixA");
+            System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
 
@@ -60,18 +61,24 @@ public class MatrixOperations {
                     if (rowsA == colsA) {
                         double[][] inverseA = invertMatrix(matrixA);
                         System.out.println("Inverse of MatrixA:");
-                        System.out.println(Arrays.deepToString(invertMatrix(inverseA)));
+                        printMatrix(inverseA);
                     } else {
                         System.out.println("MatrixA must be square for inversion.");
                     }
                     break;
                 case 5:
+                    double[][] transposeA = transposeMatrix(matrixA);
+                    System.out.println("Transpose of MatrixA:");
+                    printMatrix(transposeA);
+                    break;
+                case 6:
                     System.out.println("Exiting the program.");
                     break;
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
-        } while (choice != 5);
+        } while (choice != 6);
+
     }
 
     public static double[][] inputMatrix(int rows, int cols) {
@@ -147,7 +154,7 @@ public class MatrixOperations {
         int n = matrix.length;
         double[][] augmentedMatrix = new double[n][2 * n];
 
-        
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 augmentedMatrix[i][j] = matrix[i][j];
@@ -158,7 +165,7 @@ public class MatrixOperations {
             }
         }
 
-        
+
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
                 double factor = augmentedMatrix[j][i] / augmentedMatrix[i][i];
@@ -167,7 +174,7 @@ public class MatrixOperations {
                 }
             }
         }
-        
+
         double[][] inverseMatrix = new double[n][n];
         for (int i = n - 1; i >= 0; i--) {
             inverseMatrix[i][i] = 1.0 / augmentedMatrix[i][i];
@@ -178,4 +185,18 @@ public class MatrixOperations {
 
         return inverseMatrix;
     }
+    public static double[][] transposeMatrix(double[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        double[][] transpose = new double[cols][rows];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                transpose[j][i] = matrix[i][j];
+            }
+        }
+
+        return transpose;
+    }
+
 }
