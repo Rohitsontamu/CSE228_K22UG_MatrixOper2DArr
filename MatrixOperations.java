@@ -1,50 +1,77 @@
 package k22ug;
-import java.util.Scanner;
 
+import java.util.Arrays;
+import java.util.Scanner;
 public class MatrixOperations {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Matrix Operations");
-        System.out.print("Enter the number of rows for Matrix A: ");
+        System.out.print("Enter the number of rows for MatrixA: ");
         int rowsA = scanner.nextInt();
-        System.out.print("Enter the number of columns for Matrix A: ");
+        System.out.print("Enter the number of columns for MatrixA: ");
         int colsA = scanner.nextInt();
         double[][] matrixA = inputMatrix(rowsA, colsA);
 
-        System.out.print("Enter the number of rows for Matrix B: ");
+        System.out.print("Enter the number of rows for MatrixB: ");
         int rowsB = scanner.nextInt();
-        System.out.print("Enter the number of columns for Matrix B: ");
+        System.out.print("Enter the number of columns for MatrixB: ");
         int colsB = scanner.nextInt();
         double[][] matrixB = inputMatrix(rowsB, colsB);
 
-        System.out.println("Matrix A:");
+        System.out.println("MatrixA:");
         printMatrix(matrixA);
-        System.out.println("Matrix B:");
+        System.out.println("MatrixB:");
         printMatrix(matrixB);
 
-        if (colsA != rowsB) {
-            System.out.println("Matrix dimensions do not allow multiplication.");
-        } else {
-            double[][] product = multiplyMatrices(matrixA, matrixB);
-            System.out.println("Matrix A * Matrix B:");
-            printMatrix(product);
-        }
+        int choice;
+        do {
+            System.out.println("Matrix Operations Menu:");
+            System.out.println("1. MatrixA * MatrixB (Multiplication)");
+            System.out.println("2. MatrixA + MatrixB (Addition)");
+            System.out.println("3. MatrixA - MatrixB (Subtraction)");
+            System.out.println("4. Invert MatrixA");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
 
-        System.out.println("Matrix A + Matrix B:");
-        double[][] sum = addMatrices(matrixA, matrixB);
-        printMatrix(sum);
-
-        System.out.println("Matrix A - Matrix B:");
-        double[][] difference = subtractMatrices(matrixA, matrixB);
-        printMatrix(difference);
-
-        if (rowsA == colsA) {
-            double[][] inverseA = invertMatrix(matrixA);
-            System.out.println("Inverse of Matrix A:");
-            printMatrix(inverseA);
-        }
+            switch (choice) {
+                case 1:
+                    if (colsA != rowsB) {
+                        System.out.println("Matrix dimensions do not allow multiplication.");
+                    } else {
+                        double[][] product = multiplyMatrices(matrixA, matrixB);
+                        System.out.println("MatrixA * MatrixB:");
+                        printMatrix(product);
+                    }
+                    break;
+                case 2:
+                    double[][] sum = addMatrices(matrixA, matrixB);
+                    System.out.println("MatrixA + MatrixB:");
+                    printMatrix(sum);
+                    break;
+                case 3:
+                    double[][] difference = subtractMatrices(matrixA, matrixB);
+                    System.out.println("MatrixA - MatrixB:");
+                    printMatrix(difference);
+                    break;
+                case 4:
+                    if (rowsA == colsA) {
+                        double[][] inverseA = invertMatrix(matrixA);
+                        System.out.println("Inverse of MatrixA:");
+                        System.out.println(Arrays.deepToString(invertMatrix(inverseA)));
+                    } else {
+                        System.out.println("MatrixA must be square for inversion.");
+                    }
+                    break;
+                case 5:
+                    System.out.println("Exiting the program.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        } while (choice != 5);
     }
 
     public static double[][] inputMatrix(int rows, int cols) {
@@ -113,10 +140,42 @@ public class MatrixOperations {
     }
 
     public static double[][] invertMatrix(double[][] matrix) {
-        // Implement matrix inversion logic (e.g., Gaussian elimination or other methods)
-        // This part requires more complex math and is beyond the scope of this basic example.
-        // You can use libraries like Apache Commons Math for matrix inversion.
-        // Example: https://commons.apache.org/proper/commons-math/userguide/linear.html#matrix-inversion
-        return matrix; // Placeholder for the inversion result
+        if (matrix.length != matrix[0].length) {
+            throw new IllegalArgumentException("Matrix must be square");
+        }
+
+        int n = matrix.length;
+        double[][] augmentedMatrix = new double[n][2 * n];
+
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                augmentedMatrix[i][j] = matrix[i][j];
+            }
+
+            for (int j = n; j < 2 * n; j++) {
+                augmentedMatrix[i][j] = (i == j - n) ? 1.0 : 0.0;
+            }
+        }
+
+        
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                double factor = augmentedMatrix[j][i] / augmentedMatrix[i][i];
+                for (int k = 0; k < 2 * n; k++) {
+                    augmentedMatrix[j][k] -= factor * augmentedMatrix[i][k];
+                }
+            }
+        }
+        
+        double[][] inverseMatrix = new double[n][n];
+        for (int i = n - 1; i >= 0; i--) {
+            inverseMatrix[i][i] = 1.0 / augmentedMatrix[i][i];
+            for (int j = i - 1; j >= 0; j--) {
+                inverseMatrix[i][j] = -augmentedMatrix[i][j + n] / augmentedMatrix[i][i];
+            }
+        }
+
+        return inverseMatrix;
     }
 }
