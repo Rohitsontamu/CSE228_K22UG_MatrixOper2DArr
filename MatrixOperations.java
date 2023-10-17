@@ -1,7 +1,7 @@
 package k22ug;
 
-import java.util.Arrays;
 import java.util.Scanner;
+
 public class MatrixOperations {
 
     public static void main(String[] args) {
@@ -33,7 +33,8 @@ public class MatrixOperations {
             System.out.println("3. MatrixA - MatrixB (Subtraction)");
             System.out.println("4. Invert MatrixA");
             System.out.println("5. Transpose MatrixA");
-            System.out.println("6. Exit");
+            System.out.println("6. MatrixA ^ n (Matrix Power)");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
 
@@ -72,13 +73,23 @@ public class MatrixOperations {
                     printMatrix(transposeA);
                     break;
                 case 6:
+                    if (rowsA == colsA) {
+                        System.out.print("Enter the power (n) for MatrixA: ");
+                        int power = scanner.nextInt();
+                        double[][] result = matrixPower(matrixA, power);
+                        System.out.println("MatrixA ^ " + power + ":");
+                        printMatrix(result);
+                    } else {
+                        System.out.println("MatrixA must be square for matrix power operation.");
+                    }
+                    break;
+                case 7:
                     System.out.println("Exiting the program.");
                     break;
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
-        } while (choice != 6);
-
+        } while (choice != 7);
     }
 
     public static double[][] inputMatrix(int rows, int cols) {
@@ -154,7 +165,6 @@ public class MatrixOperations {
         int n = matrix.length;
         double[][] augmentedMatrix = new double[n][2 * n];
 
-
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 augmentedMatrix[i][j] = matrix[i][j];
@@ -164,7 +174,6 @@ public class MatrixOperations {
                 augmentedMatrix[i][j] = (i == j - n) ? 1.0 : 0.0;
             }
         }
-
 
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
@@ -185,6 +194,7 @@ public class MatrixOperations {
 
         return inverseMatrix;
     }
+
     public static double[][] transposeMatrix(double[][] matrix) {
         int rows = matrix.length;
         int cols = matrix[0].length;
@@ -199,4 +209,35 @@ public class MatrixOperations {
         return transpose;
     }
 
+    public static double[][] matrixPower(double[][] matrix, int power) {
+        if (matrix.length != matrix[0].length) {
+            throw new IllegalArgumentException("Matrix must be square for matrix power operation.");
+        }
+
+        if (power < 0) {
+            throw new IllegalArgumentException("Power must be a non-negative integer.");
+        }
+
+        int n = matrix.length;
+        double[][] result = new double[n][n];
+        double[][] temp = new double[n][n];
+
+        // Initialize result as the identity matrix
+        for (int i = 0; i < n; i++) {
+            result[i][i] = 1.0;
+        }
+
+        while (power > 0) {
+            if (power % 2 == 1) {
+                // Multiply result by matrix when the power is odd
+                result = multiplyMatrices(result, matrix);
+            }
+            // Square the matrix and reduce power by half
+            temp = multiplyMatrices(matrix, matrix);
+            matrix = temp;
+            power /= 2;
+        }
+
+        return result;
+    }
 }
