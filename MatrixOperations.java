@@ -1,9 +1,10 @@
 package k22ug;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MatrixOperations {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -12,13 +13,13 @@ public class MatrixOperations {
         int rowsA = scanner.nextInt();
         System.out.print("Enter the number of columns for MatrixA: ");
         int colsA = scanner.nextInt();
-        double[][] matrixA = inputMatrix(rowsA, colsA);
+        List<List<Double>> matrixA = inputMatrix(rowsA, colsA);
 
         System.out.print("Enter the number of rows for MatrixB: ");
         int rowsB = scanner.nextInt();
         System.out.print("Enter the number of columns for MatrixB: ");
         int colsB = scanner.nextInt();
-        double[][] matrixB = inputMatrix(rowsB, colsB);
+        List<List<Double>> matrixB = inputMatrix(rowsB, colsB);
 
         System.out.println("MatrixA:");
         printMatrix(matrixA);
@@ -43,24 +44,24 @@ public class MatrixOperations {
                     if (colsA != rowsB) {
                         System.out.println("Matrix dimensions do not allow multiplication.");
                     } else {
-                        double[][] product = multiplyMatrices(matrixA, matrixB);
+                        List<List<Double>> product = multiplyMatrices(matrixA, matrixB);
                         System.out.println("MatrixA * MatrixB:");
                         printMatrix(product);
                     }
                     break;
                 case 2:
-                    double[][] sum = addMatrices(matrixA, matrixB);
+                    List<List<Double>> sum = addMatrices(matrixA, matrixB);
                     System.out.println("MatrixA + MatrixB:");
                     printMatrix(sum);
                     break;
                 case 3:
-                    double[][] difference = subtractMatrices(matrixA, matrixB);
+                    List<List<Double>> difference = subtractMatrices(matrixA, matrixB);
                     System.out.println("MatrixA - MatrixB:");
                     printMatrix(difference);
                     break;
                 case 4:
                     if (rowsA == colsA) {
-                        double[][] inverseA = invertMatrix(matrixA);
+                        List<List<Double>> inverseA = invertMatrix(matrixA);
                         System.out.println("Inverse of MatrixA:");
                         printMatrix(inverseA);
                     } else {
@@ -68,7 +69,7 @@ public class MatrixOperations {
                     }
                     break;
                 case 5:
-                    double[][] transposeA = transposeMatrix(matrixA);
+                    List<List<Double>> transposeA = transposeMatrix(matrixA);
                     System.out.println("Transpose of MatrixA:");
                     printMatrix(transposeA);
                     break;
@@ -76,7 +77,7 @@ public class MatrixOperations {
                     if (rowsA == colsA) {
                         System.out.print("Enter the power (n) for MatrixA: ");
                         int power = scanner.nextInt();
-                        double[][] result = matrixPower(matrixA, power);
+                        List<List<Double>> result = matrixPower(matrixA, power);
                         System.out.println("MatrixA ^ " + power + ":");
                         printMatrix(result);
                     } else {
@@ -92,147 +93,164 @@ public class MatrixOperations {
         } while (choice != 7);
     }
 
-    public static double[][] inputMatrix(int rows, int cols) {
+    public static List<List<Double>> inputMatrix(int rows, int cols) {
         Scanner scanner = new Scanner(System.in);
-        double[][] matrix = new double[rows][cols];
+        List<List<Double>> matrix = new ArrayList<>();
 
         System.out.println("Enter elements of the matrix:");
 
         for (int i = 0; i < rows; i++) {
+            List<Double> row = new ArrayList<>();
             for (int j = 0; j < cols; j++) {
-                matrix[i][j] = scanner.nextDouble();
+                row.add(scanner.nextDouble());
             }
+            matrix.add(row);
         }
         return matrix;
     }
 
-    public static void printMatrix(double[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(matrix[i][j] + " ");
+    public static void printMatrix(List<List<Double>> matrix) {
+        for (List<Double> row : matrix) {
+            for (Double value : row) {
+                System.out.print(value + " ");
             }
             System.out.println();
         }
     }
 
-    public static double[][] addMatrices(double[][] matrixA, double[][] matrixB) {
-        int rows = matrixA.length;
-        int cols = matrixA[0].length;
-        double[][] sum = new double[rows][cols];
+    public static List<List<Double>> addMatrices(List<List<Double>> matrixA, List<List<Double>> matrixB) {
+        int rows = matrixA.size();
+        int cols = matrixA.get(0).size();
+        List<List<Double>> sum = new ArrayList<>();
 
         for (int i = 0; i < rows; i++) {
+            List<Double> row = new ArrayList<>();
             for (int j = 0; j < cols; j++) {
-                sum[i][j] = matrixA[i][j] + matrixB[i][j];
+                row.add(matrixA.get(i).get(j) + matrixB.get(i).get(j));
             }
+            sum.add(row);
         }
         return sum;
     }
 
-    public static double[][] subtractMatrices(double[][] matrixA, double[][] matrixB) {
-        int rows = matrixA.length;
-        int cols = matrixA[0].length;
-        double[][] difference = new double[rows][cols];
+    public static List<List<Double>> subtractMatrices(List<List<Double>> matrixA, List<List<Double>> matrixB) {
+        int rows = matrixA.size();
+        int cols = matrixA.get(0).size();
+        List<List<Double>> difference = new ArrayList<>();
 
         for (int i = 0; i < rows; i++) {
+            List<Double> row = new ArrayList<>();
             for (int j = 0; j < cols; j++) {
-                difference[i][j] = matrixA[i][j] - matrixB[i][j];
+                row.add(matrixA.get(i).get(j) - matrixB.get(i).get(j));
             }
+            difference.add(row);
         }
         return difference;
     }
 
-    public static double[][] multiplyMatrices(double[][] matrixA, double[][] matrixB) {
-        int rowsA = matrixA.length;
-        int colsA = matrixA[0].length;
-        int colsB = matrixB[0].length;
-        double[][] product = new double[rowsA][colsB];
+    public static List<List<Double>> multiplyMatrices(List<List<Double>> matrixA, List<List<Double>> matrixB) {
+        int rowsA = matrixA.size();
+        int colsA = matrixA.get(0).size();
+        int colsB = matrixB.get(0).size();
+        List<List<Double>> product = new ArrayList<>();
 
         for (int i = 0; i < rowsA; i++) {
+            List<Double> row = new ArrayList<>();
             for (int j = 0; j < colsB; j++) {
+                double value = 0.0;
                 for (int k = 0; k < colsA; k++) {
-                    product[i][j] += matrixA[i][k] * matrixB[k][j];
+                    value += matrixA.get(i).get(k) * matrixB.get(k).get(j);
                 }
+                row.add(value);
             }
+            product.add(row);
         }
         return product;
     }
 
-    public static double[][] invertMatrix(double[][] matrix) {
-        if (matrix.length != matrix[0].length) {
-            throw new IllegalArgumentException("Matrix must be square");
-        }
+    public static List<List<Double>> invertMatrix(List<List<Double>> matrix) {
+        int n = matrix.size();
+        List<List<Double>> augmentedMatrix = new ArrayList<>();
 
-        int n = matrix.length;
-        double[][] augmentedMatrix = new double[n][2 * n];
-
+        // Initialize the augmented matrix
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                augmentedMatrix[i][j] = matrix[i][j];
+            List<Double> row = new ArrayList<>();
+            for (int j = 0; j < 2 * n; j++) {
+                if (j < n) {
+                    row.add(matrix.get(i).get(j));
+                } else {
+                    row.add((i == j - n) ? 1.0 : 0.0);
+                }
             }
-
-            for (int j = n; j < 2 * n; j++) {
-                augmentedMatrix[i][j] = (i == j - n) ? 1.0 : 0.0;
-            }
+            augmentedMatrix.add(row);
         }
 
+        // Perform Gaussian elimination
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                double factor = augmentedMatrix[j][i] / augmentedMatrix[i][i];
+                double factor = augmentedMatrix.get(j).get(i) / augmentedMatrix.get(i).get(i);
                 for (int k = 0; k < 2 * n; k++) {
-                    augmentedMatrix[j][k] -= factor * augmentedMatrix[i][k];
+                    double value = augmentedMatrix.get(j).get(k) - factor * augmentedMatrix.get(i).get(k);
+                    augmentedMatrix.get(j).set(k, value);
                 }
             }
         }
 
-        double[][] inverseMatrix = new double[n][n];
+        // Back-substitution
+        List<List<Double>> inverseMatrix = new ArrayList<>();
         for (int i = n - 1; i >= 0; i--) {
-            inverseMatrix[i][i] = 1.0 / augmentedMatrix[i][i];
-            for (int j = i - 1; j >= 0; j--) {
-                inverseMatrix[i][j] = -augmentedMatrix[i][j + n] / augmentedMatrix[i][i];
+            List<Double> row = new ArrayList<>();
+            for (int j = n - 1; j >= 0; j--) {
+                if (i == j) {
+                    row.add(augmentedMatrix.get(i).get(j + n) / augmentedMatrix.get(i).get(i));
+                } else {
+                    row.add(-augmentedMatrix.get(i).get(j + n) / augmentedMatrix.get(i).get(i));
+                }
             }
+            inverseMatrix.add(row);
         }
 
         return inverseMatrix;
     }
 
-    public static double[][] transposeMatrix(double[][] matrix) {
-        int rows = matrix.length;
-        int cols = matrix[0].length;
-        double[][] transpose = new double[cols][rows];
+    public static List<List<Double>> transposeMatrix(List<List<Double>> matrix) {
+        int rows = matrix.size();
+        int cols = matrix.get(0).size();
+        List<List<Double>> transpose = new ArrayList<>();
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                transpose[j][i] = matrix[i][j];
+        for (int i = 0; i < cols; i++) {
+            List<Double> row = new ArrayList<>();
+            for (int j = 0; j < rows; j++) {
+                row.add(matrix.get(j).get(i));
             }
+            transpose.add(row);
         }
 
         return transpose;
     }
 
-    public static double[][] matrixPower(double[][] matrix, int power) {
-        if (matrix.length != matrix[0].length) {
-            throw new IllegalArgumentException("Matrix must be square for matrix power operation.");
-        }
+    public static List<List<Double>> matrixPower(List<List<Double>> matrix, int power) {
+        int n = matrix.size();
+        List<List<Double>> result = new ArrayList<>();
+        List<List<Double>> temp = new ArrayList<>();
 
-        if (power < 0) {
-            throw new IllegalArgumentException("Power must be a non-negative integer.");
-        }
-
-        int n = matrix.length;
-        double[][] result = new double[n][n];
-        double[][] temp = new double[n][n];
-
-        // Initialize result as the identity matrix
+        // Initialize the result matrix as the identity matrix
         for (int i = 0; i < n; i++) {
-            result[i][i] = 1.0;
+            List<Double> row = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    row.add(1.0);
+                } else {
+                    row.add(0.0);
+                }
+            }
+            result.add(row);
         }
 
         while (power > 0) {
             if (power % 2 == 1) {
-                // Multiply result by matrix when the power is odd
                 result = multiplyMatrices(result, matrix);
             }
-            // Square the matrix and reduce power by half
             temp = multiplyMatrices(matrix, matrix);
             matrix = temp;
             power /= 2;
@@ -241,3 +259,8 @@ public class MatrixOperations {
         return result;
     }
 }
+
+
+
+
+
